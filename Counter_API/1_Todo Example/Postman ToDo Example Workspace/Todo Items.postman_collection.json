@@ -1,0 +1,189 @@
+{
+	"info": {
+		"_postman_id": "41a7e55a-eb4b-4ede-89a1-f9f953facb1c",
+		"name": "Todo Items",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6211619",
+		"_collection_link": "https://hive-one.postman.co/workspace/Todo-App~474492c0-02a8-4e2c-9056-27401371c86a/collection/6211619-41a7e55a-eb4b-4ede-89a1-f9f953facb1c?action=share&source=collection_link&creator=6211619"
+	},
+	"item": [
+		{
+			"name": "List Todos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Status is 200\", () => {",
+							"    pm.expect(pm.response.code).eq(200);",
+							"});",
+							"",
+							"pm.test(\"Result is an Array\", () => {",
+							"    pm.expect(response).instanceOf(Array);",
+							"});",
+							"",
+							"var schema = {",
+							"    \"id\": {",
+							"        \"type\": \"number\"",
+							"    },",
+							"    \"content\":{",
+							"        \"type\":\"string\"",
+							"    },",
+							"    \"isDone\":{",
+							"        \"type\":\"boolean\"",
+							"    },",
+							"};",
+							"",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    for(let i = 0; i < response.length; i++){",
+							"        pm.expect(tv4.validate(response[i], schema)).to.be.true;",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Single Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status Code is OK\", () => {",
+							"    pm.expect(pm.response.code).eq(200);",
+							"});",
+							"",
+							"var schema = {",
+							"    \"id\": {",
+							"        \"type\": \"number\"",
+							"    },",
+							"    \"content\":{",
+							"        \"type\":\"string\"",
+							"    },",
+							"    \"isDone\":{",
+							"        \"type\":\"boolean\"",
+							"    },",
+							"};",
+							"",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/todos/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();",
+							"const req = JSON.parse(pm.request.body.toJSON().raw);",
+							"",
+							"pm.test(\"Backend Saved Correctly\", () => {",
+							"    pm.expect(res.content).to.be.eql(req.content);",
+							"    pm.expect(res.isDone).eql(req.isDone);",
+							"    pm.expect(res).haveOwnProperty(\"id\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"test this\",\n    \"isDone\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 204 No Content\", () => {",
+							"    pm.expect(pm.response.code).eq(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/todos/3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
